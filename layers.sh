@@ -2,6 +2,9 @@
 
 read -p "Enter Lambda layer name: " Lambda_Layer
 
+sudo amazon-linux-extras enable python3.8
+sudo yum install python38 -y 
+
 # initialize an empty list to store Python packages
 python_packages=()
 
@@ -18,7 +21,7 @@ while true; do
     python_packages+=("$python_package")  # add the package to the list
 done
 
-sudo amazon-linux-extras enable python3.8
+
 
 sudo yum install python38 -y 
 
