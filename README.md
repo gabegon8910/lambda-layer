@@ -1,4 +1,4 @@
-#Lambda Layer Creator
+# Lambda Layer Creator
 This script automates the creation of a Lambda layer with one or more Python packages. The script uses Python 3.8 and Amazon Linux 2.
 
 ## Requirements
