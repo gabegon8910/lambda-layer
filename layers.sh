@@ -10,6 +10,11 @@ while true; do
     if [[ -z "$python_package" ]]; then
         break  # exit the loop if user enters an empty string
     fi
+    # check if the package exists before adding it to the list
+    if ! pip3.8 show "$python_package" >/dev/null 2>&1; then
+        echo "Error: package '$python_package' not found."
+        continue  # skip this iteration of the loop and ask for another package
+    fi
     python_packages+=("$python_package")  # add the package to the list
 done
 
