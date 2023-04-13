@@ -9,7 +9,7 @@ AWS account with permissions to create Lambda layers
 1. Clone this repository to your local machine:
 
 ``` bash
-git clone https://github.com/gabegon8910/lambda-layer-creator.git
+git clone https://github.com/gabegon8910/lambda-layer.git
 ```
 2. Navigate to the repository directory:
 
