@@ -11,7 +11,7 @@ python_packages=()
 
 sudo mkdir $Lambda_Layer && cd $Lambda_Layer
 
-python3.8 -m venv python 
+sudo python3.8 -m venv python 
 
 sudo source python/bin/activate 
 while true; do
@@ -28,11 +28,11 @@ while true; do
     fi
 done
 
-deactivate
+sudo deactivate
 
-zip -r $Lambda_Layer.zip python/lib
+sudo zip -r $Lambda_Layer.zip python/lib
 
-aws lambda publish-layer-version \
+sudo aws lambda publish-layer-version \
     --layer-name $Lambda_Layer \
     --zip-file fileb://$Lambda_Layer.zip \
     --compatible-runtimes python3.7 python3.8 \
