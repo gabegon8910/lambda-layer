@@ -21,7 +21,7 @@ while true; do
     fi
 
     # use a try/except block to handle package installation errors
-    if pip3.8 install "$python_package"; then
+    if sudo pip3.8 install "$python_package"; then
         python_packages+=("$python_package")  # add the package to the list
     else
         echo "Error: package '$python_package' not found"
