@@ -14,12 +14,12 @@ git clone https://github.com/gabegon8910/lambda-layer.git
 2. Navigate to the repository directory:
 
 ```bash
-cd lambda-layer-creator
+cd lambda-layer
 ```
 3. Run the script:
 
 ``` bash
-bash create_layer.sh
+bash layers.sh
 ```
 4. Enter the name of the Lambda layer when prompted:
 ```bash 
