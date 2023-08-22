@@ -2,11 +2,18 @@
 
 # Prompt the user for the Lambda layer name and Python runtime version
 read -p "Enter Lambda layer name: " Lambda_Layer
-read -p "Enter Python runtime version (e.g., 3.8): " Python_Version
+read -p "Enter Python runtime version (e.g., 3.10): " Python_Version
 
-# Install the specified Python runtime
-sudo amazon-linux-extras enable python${Python_Version}
-sudo yum install python${Python_Version} -y
+# Check if the specified Python version is already installed
+if command -v python${Python_Version} &>/dev/null; then
+    echo "Python ${Python_Version} is already installed."
+else
+    echo "Python ${Python_Version} is not installed. Installing..."
+    
+    # Install the specified Python runtime
+    sudo amazon-linux-extras enable python${Python_Version}
+    sudo yum install python${Python_Version} -y
+fi
 
 # Initialize an empty list to store Python packages
 python_packages=()
