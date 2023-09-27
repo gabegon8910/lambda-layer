@@ -5,10 +5,10 @@ read -p "Enter Lambda layer name: " Lambda_Layer
 read -p "Enter Python runtime version (e.g., 3.10): " Python_Version
 
 # Check if the specified Python version is already installed
-if command -v python3.${Python_Version} &>/dev/null; then
-    echo "Python 3.${Python_Version} is already installed."
+if command -v python${Python_Version} &>/dev/null; then
+    echo "Python ${Python_Version} is already installed."
 else
-    echo "Python 3.${Python_Version} is not installed. Installing..."
+    echo "Python ${Python_Version} is not installed. Installing..."
 
     # Enable the Amazon Linux Extras repository for Python 3.10
     sudo amazon-linux-extras enable python3.10
