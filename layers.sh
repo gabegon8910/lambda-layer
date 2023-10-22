@@ -24,7 +24,7 @@ python_packages=()
 mkdir $Lambda_Layer && cd $Lambda_Layer
 
 # Create a virtual environment for the specified Python version
-python3.${Python_Version} -m venv python
+python${Python_Version} -m venv python
 
 # Activate the virtual environment
 source python/bin/activate
