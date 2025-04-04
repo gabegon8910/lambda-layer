@@ -1,15 +1,12 @@
 #!/bin/bash
 
-
 read -p "Enter Lambda layer name: " Lambda_Layer
 read -p "Enter Python runtime version (e.g., 3.10): " Python_Version
-
 
 if [[ -z "$Lambda_Layer" || -z "$Python_Version" ]]; then
     echo "Error: Lambda layer name and Python version are required"
     exit 1
 fi
-
 
 install_python() {
     local version=$1
@@ -50,7 +47,6 @@ install_python() {
             exit 1
         fi
     elif [[ "$(uname)" == "Darwin" ]]; then
-       
         if ! command -v brew &>/dev/null; then
             echo "Error: Homebrew is required on macOS. Please install it first."
             exit 1
@@ -60,7 +56,6 @@ install_python() {
             exit 1
         }
     elif [[ "$(uname)" == "MINGW"* || "$(uname)" == "MSYS"* || "$(uname)" == "CYGWIN"* ]]; then
-       
         if command -v choco &>/dev/null; then
             choco install "python${version//./}" -y || {
                 echo "Error: Failed to install Python ${version} via Chocolatey"
@@ -76,22 +71,18 @@ install_python() {
     fi
 }
 
-
 if command -v "python${Python_Version}" &>/dev/null; then
     echo "Python ${Python_Version} is already installed."
 else
     install_python "$Python_Version"
 fi
 
-
 if ! command -v "python${Python_Version}" &>/dev/null; then
     echo "Error: Python ${Python_Version} installation failed or not in PATH"
     exit 1
 fi
 
-
 declare -a python_packages
-
 
 if ! mkdir "$Lambda_Layer"; then
     echo "Error: Failed to create directory $Lambda_Layer"
@@ -99,12 +90,10 @@ if ! mkdir "$Lambda_Layer"; then
 fi
 cd "$Lambda_Layer" || exit 1
 
-
 if ! "python${Python_Version}" -m venv python; then
     echo "Error: Failed to create virtual environment"
     exit 1
 fi
-
 
 if [[ "$(uname)" == "MINGW"* || "$(uname)" == "MSYS"* || "$(uname)" == "CYGWIN"* ]]; then
     source python/Scripts/activate
@@ -115,7 +104,6 @@ fi || {
     exit 1
 }
 
-
 while true; do
     read -p "Enter Python package name (leave blank to finish): " python_package
     if [[ -z "$python_package" ]]; then
@@ -123,7 +111,6 @@ while true; do
     fi
     python_packages+=("$python_package")
 done
-
 
 if [ ${#python_packages[@]} -gt 0 ]; then
     for package in "${python_packages[@]}"; do
@@ -135,18 +122,31 @@ else
     echo "No packages specified to install"
 fi
 
-
 deactivate
-
 
 mkdir -p python/lib
 cp -r python/lib/python${Python_Version}/site-packages/* python/lib/ 2>/dev/null || {
-    
     cp -r python/Lib/site-packages/* python/lib/ 2>/dev/null || {
         echo "Error: Failed to copy Python packages"
         exit 1
     }
 }
+
+# Check the size of the python/lib directory (uncompressed size)
+if [[ "$(uname)" == "Darwin" ]]; then
+    # macOS uses stat -f and size in bytes
+    size=$(du -s python/lib | awk '{print $1}')  # Size in 512-byte blocks
+    size_mb=$((size * 512 / 1024 / 1024))       # Convert to MB
+else
+    # Linux/Windows (Git Bash) uses du -sb for bytes
+    size=$(du -sb python/lib | awk '{print $1}') # Size in bytes
+    size_mb=$((size / 1024 / 1024))              # Convert to MB
+fi
+
+if [ "$size_mb" -gt 250 ]; then
+    echo "WARNING: The uncompressed Lambda layer size (${size_mb}MB) exceeds AWS Lambda's 250MB limit."
+    echo "The layer may not work when uploaded to AWS Lambda."
+fi
 
 if ! zip -r "../${Lambda_Layer}.zip" python/lib; then
     echo "Error: Failed to create zip file"
